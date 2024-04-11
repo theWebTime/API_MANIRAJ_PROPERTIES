@@ -10,4 +10,14 @@ class OurTeam extends Model
     use HasFactory;
 
     protected $fillable = ['image', 'name', 'role'];
+
+    public function getImageAttribute($value)
+    {
+        $host = request()->getSchemeAndHttpHost();
+        if ($value) {
+            return $host . '/images/ourTeam/' . $value;
+        } else {
+            return null;
+        }
+    }
 }

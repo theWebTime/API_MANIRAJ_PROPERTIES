@@ -20,4 +20,13 @@ class Residentials extends Model
             return null;
         }
     }
+    public function getBrochureAttribute($value)
+    {
+        $host = request()->getSchemeAndHttpHost();
+        if ($value) {
+            return $host . '/brochure/residentialBrochure/' . $value;
+        } else {
+            return null;
+        }
+    }
 }

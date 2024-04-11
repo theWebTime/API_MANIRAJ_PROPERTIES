@@ -10,4 +10,14 @@ class AboutUs extends Model
     use HasFactory;
 
     protected $fillable = ['image', 'title', 'description', 'hand_of_experience', 'million_square_feet', 'units', 'residential_property', 'commercial_property', 'plots'];
+
+    public function getImageAttribute($value)
+    {
+        $host = request()->getSchemeAndHttpHost();
+        if ($value) {
+            return $host . '/images/aboutUs/' . $value;
+        } else {
+            return null;
+        }
+    }
 }

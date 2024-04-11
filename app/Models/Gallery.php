@@ -10,4 +10,14 @@ class Gallery extends Model
     use HasFactory;
 
     protected $fillable = ['image'];
+
+    public function getImageAttribute($value)
+    {
+        $host = request()->getSchemeAndHttpHost();
+        if ($value) {
+            return $host . '/images/gallery/' . $value;
+        } else {
+            return null;
+        }
+    }
 }

@@ -11,7 +11,7 @@ use App\Http\Controllers\BaseController as BaseController;
 
 class SiteSettingController extends BaseController
 {
-    public function updateOrCreate(Request $request)
+    public function updateOrCreateSiteSetting(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
@@ -51,10 +51,10 @@ class SiteSettingController extends BaseController
         }
     }
 
-    public function show()
+    public function siteSettingShow()
     {
         try {
-            $data = SiteSetting::select('id', 'logo',  'email1', 'email2', 'phone_number1', 'phone_number2', 'address', 'iframe', 'video_link', 'facebook_link', 'instagram_link', 'youtube_link', 'whatsapp_number')->first();
+            $data = SiteSetting::select('logo',  'email1', 'email2', 'phone_number1', 'phone_number2', 'address', 'iframe', 'video_link', 'facebook_link', 'instagram_link', 'youtube_link', 'whatsapp_number')->first();
             if (is_null($data)) {
                 return $this->sendError('Site Setting not found.');
             }
