@@ -69,11 +69,18 @@ class ResidentialController extends BaseController
         }
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = Residentials::where('id', $id)->select('id', 'name', 'image', 'description', 'type_of_property_id', 'square_yard', 'status_id', 'shop_square_feet', 'iframe', 'location', 'brochure', 'status')->first();
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'residential_show' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $data = Residentials::where('id', $request->input('residential_show'))->select('id', 'name', 'image', 'description', 'type_of_property_id', 'square_yard', 'status_id', 'shop_square_feet', 'iframe', 'location', 'brochure', 'status')->first();
             if (is_null($data)) {
                 return $this->sendError('Data not found.');
             }
@@ -83,7 +90,7 @@ class ResidentialController extends BaseController
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
@@ -100,6 +107,7 @@ class ResidentialController extends BaseController
                 'location' => 'required|string',
                 'brochure' => 'nullable|max:30000|mimes:pdf',
                 'status' => 'required|in:0,1',
+                'residential_update' => 'required',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -118,7 +126,7 @@ class ResidentialController extends BaseController
                 $updateData['brochure'] = $filename;
             }
             // Insert or Update Residentials in residentials Table
-            Residentials::where('id', $id)->update($updateData);
+            Residentials::where('id', $request->input('residential_update'))->update($updateData);
             return $this->sendResponse([], 'Residentials updated successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);
@@ -144,12 +152,12 @@ class ResidentialController extends BaseController
         try {
             $input = $request->all();
             $validator = Validator::make($input, [
-                'residential_id' => 'required|exists:residentials,id',
+                'residential_gallery_index' => 'required|exists:residentials,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $residentialGallery = ResidentialGallery::where('residential_id', $request->input('residential_id'))->select('id', 'data')->orderBy('id', 'DESC')->paginate($request->itemsPerPage ?? 10);
+            $residentialGallery = ResidentialGallery::where('residential_id', $request->input('residential_gallery_index'))->select('id', 'data')->orderBy('id', 'DESC')->paginate($request->itemsPerPage ?? 10);
             return $this->sendResponse($residentialGallery, 'Residential Gallery Data retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);
@@ -165,7 +173,7 @@ class ResidentialController extends BaseController
             $validator = Validator::make($input, [
                 'files' => 'required',
                 'files.*' => 'mimes:jpg,jpeg,png,bmp,mp4|max:20000',
-                'residential_id' => 'required|exists:residentials,id',
+                'residential_gallery_store' => 'required|exists:residentials,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -177,7 +185,7 @@ class ResidentialController extends BaseController
                 $data->move(public_path('images/residentialGallery'), $filename);
                 ResidentialGallery::insert(
                     [
-                        'residential_id' => $request->input('residential_id'),
+                        'residential_id' => $request->input('residential_gallery_store'),
                         'data' => $filename,
                         'is_pic' => in_array($extension, $picExtension) ? 1 : 0,
                     ]
@@ -195,15 +203,15 @@ class ResidentialController extends BaseController
         try {
             $input = $request->all();
             $validator = Validator::make($input, [
-                'residential_id' => 'required|exists:residentials,id',
+                'residential_gallery_delete' => 'required|exists:residentials,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $data = DB::table('residential_galleries')->where('id', $request->input('residential_id'))->first();
+            $data = DB::table('residential_galleries')->where('id', $request->input('residential_gallery_delete'))->first();
             $path = public_path() . "/images/residentialGallery/" . $data->data;
             unlink($path);
-            DB::table('residential_galleries')->where('id', $request->input('residential_id'))->delete();
+            DB::table('residential_galleries')->where('id', $request->input('residential_gallery_delete'))->delete();
             return $this->sendResponse([], 'Residential Gallery deleted successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);
@@ -230,12 +238,12 @@ class ResidentialController extends BaseController
         try {
             $input = $request->all();
             $validator = Validator::make($input, [
-                'residential_id' => 'required|exists:residentials,id',
+                'residential_amenity_index' => 'required|exists:residentials,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $data = ResidentialAmenities::where('residentials_id', $request->input('residential_id'))->join('residentials', 'residentials.id', '=', 'residential_amenities.residentials_id')->join('amenities', 'amenities.id', '=', 'residential_amenities.amenities_id')->select('residential_amenities.id', 'residentials.name as residential_name', 'amenities.name as amenities_name')->orderBy('id', 'DESC')->paginate($request->itemsPerPage ?? 10);
+            $data = ResidentialAmenities::where('residentials_id', $request->input('residential_amenity_index'))->join('residentials', 'residentials.id', '=', 'residential_amenities.residentials_id')->join('amenities', 'amenities.id', '=', 'residential_amenities.amenities_id')->select('residential_amenities.id', 'residentials.name as residential_name', 'amenities.name as amenities_name')->orderBy('id', 'DESC')->paginate($request->itemsPerPage ?? 10);
             return $this->sendResponse($data, 'Residential Amenities Data retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);
@@ -250,12 +258,12 @@ class ResidentialController extends BaseController
             $input = $request->all();
             $validator = Validator::make($input, [
                 'amenities_id' => 'required|exists:amenities,id',
-                'residential_id' => 'required|exists:residentials,id',
+                'residential_amenity_store' => 'required|exists:residentials,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $updateData = (['residentials_id' => $request->input('residential_id'), 'amenities_id' => $input['amenities_id']]);
+            $updateData = (['residentials_id' => $request->input('residential_amenity_store'), 'amenities_id' => $input['amenities_id']]);
             // Insert or Update Residentials Amenities in residentials_amenities Table
             $data = ResidentialAmenities::insert($updateData);
             return $this->sendResponse([], 'Residential Amenity created successfully.');
@@ -270,12 +278,12 @@ class ResidentialController extends BaseController
         try {
             $input = $request->all();
             $validator = Validator::make($input, [
-                'residential_id' => 'required|exists:residentials,id',
+                'residential_amenity_delete' => 'required|exists:residentials,id',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            ResidentialAmenities::where('residentials_id', $request->input('residential_id'))->delete();
+            ResidentialAmenities::where('residentials_id', $request->input('residential_amenity_delete'))->delete();
             return $this->sendResponse([], 'Residential Amenities deleted successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);

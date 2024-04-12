@@ -47,11 +47,18 @@ class AmenityController extends BaseController
         }
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = Amenity::where('id', $id)->select('id', 'name', 'description', 'status')->first();
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'amenity_show' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $data = Amenity::where('id', $request->input('amenity_show'))->select('id', 'name', 'description', 'status')->first();
             if (is_null($data)) {
                 return $this->sendError('Data not found.');
             }
@@ -61,7 +68,7 @@ class AmenityController extends BaseController
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
@@ -70,13 +77,14 @@ class AmenityController extends BaseController
                 'name' => 'required|max:80',
                 'description' => 'nullable',
                 'status' => 'required|in:0,1',
+                'amenity_update' => 'required',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $updateData = (['name' => $input['name'], 'description' => $input['description'], 'status' => $input['status']]);
             // Insert or Update Amenity in amenities Table
-            Amenity::where('id', $id)->update($updateData);
+            Amenity::where('id', $request->input('amenity_update'))->update($updateData);
             return $this->sendResponse([], 'Amenity updated successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);

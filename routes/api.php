@@ -43,14 +43,10 @@ Route::post('login', [AuthController::class, 'login']);
     Route::get('/show-all-team-member', [GalleryController::class, 'showAllOurTeam']);
 }); */
 
-Route::get('/amenity-show/{id}', [AmenityController::class, 'show']);
-Route::get('/residential-show/{id}', [ResidentialController::class, 'show']);
-Route::get('/plot-show/{id}', [PlotController::class, 'show']);
-Route::get('/commercial-show/{id}', [CommercialController::class, 'show']);
-Route::get('/our-team-show/{id}', [OurTeamController::class, 'show']);
 
 // Contact Us Routes
 Route::post('/contact-us-store', [ContactUsController::class, 'store']);
+
 
 Route::middleware('auth:api')->group(function () {
 
@@ -63,14 +59,16 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => '/amenity'], function () {
         Route::get('/index', [AmenityController::class, 'index']);
         Route::post('/store', [AmenityController::class, 'store']);
-        Route::post('/update/{id}', [AmenityController::class, 'update']);
+        Route::post('/show', [AmenityController::class, 'show']);
+        Route::post('/update', [AmenityController::class, 'update']);
     });
 
     // Residential Routes
     Route::group(['prefix' => '/residential'], function () {
         Route::get('/index', [ResidentialController::class, 'index']);
         Route::post('/store', [ResidentialController::class, 'store']);
-        Route::post('/update/{id}', [ResidentialController::class, 'update']);
+        Route::post('/show', [ResidentialController::class, 'show']);
+        Route::post('/update', [ResidentialController::class, 'update']);
     });
 
     // Residential Gallery Routes
@@ -91,14 +89,16 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => '/plot'], function () {
         Route::get('/index', [PlotController::class, 'index']);
         Route::post('/store', [PlotController::class, 'store']);
-        Route::post('/update/{id}', [PlotController::class, 'update']);
+        Route::post('/show', [PlotController::class, 'show']);
+        Route::post('/update', [PlotController::class, 'update']);
     });
 
     // Commercial Routes
     Route::group(['prefix' => '/commercial'], function () {
         Route::get('/index', [CommercialController::class, 'index']);
         Route::post('/store', [CommercialController::class, 'store']);
-        Route::post('/update/{id}', [CommercialController::class, 'update']);
+        Route::post('/show', [CommercialController::class, 'show']);
+        Route::post('/update', [CommercialController::class, 'update']);
     });
 
     // About Us Routes
@@ -110,14 +110,16 @@ Route::middleware('auth:api')->group(function () {
     Route::group(['prefix' => '/gallery'], function () {
         Route::get('/index', [GalleryController::class, 'index']);
         Route::post('/store', [GalleryController::class, 'store']);
-        Route::post('/delete/{id}', [GalleryController::class, 'delete']);
+        Route::post('/delete', [GalleryController::class, 'delete']);
     });
 
     // Our Team Routes
     Route::group(['prefix' => '/our-team'], function () {
         Route::get('/index', [OurTeamController::class, 'index']);
         Route::post('/store', [OurTeamController::class, 'store']);
-        Route::post('/delete/{id}', [OurTeamController::class, 'delete']);
+        Route::post('/show', [OurTeamController::class, 'show']);
+        Route::post('/update', [OurTeamController::class, 'update']);
+        Route::post('/delete', [OurTeamController::class, 'delete']);
     });
 
     // Contact Us Routes

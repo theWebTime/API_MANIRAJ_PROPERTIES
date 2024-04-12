@@ -48,11 +48,18 @@ class PlotController extends BaseController
         }
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = Plot::where('id', $id)->select('id', 'iframe', 'location', 'square_yard', 'status_id')->first();
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'plot_show' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $data = Plot::where('id', $request->input('plot_show'))->select('id', 'iframe', 'location', 'square_yard', 'status_id')->first();
             if (is_null($data)) {
                 return $this->sendError('Data not found.');
             }
@@ -62,7 +69,7 @@ class PlotController extends BaseController
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
@@ -73,13 +80,14 @@ class PlotController extends BaseController
                 'square_yard' => 'required|string|max:50',
                 'status_id' => 'required|exists:statuses,id',
                 'status' => 'required|in:0,1',
+                'plot_update' => 'required',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $updateData = (['iframe' => $input['iframe'], 'location' => $input['location'], 'square_yard' => $input['square_yard'], 'status_id' => $input['status_id'], 'status' => $input['status']]);
             // Insert or Update Plot in plots Table
-            Plot::where('id', $id)->update($updateData);
+            Plot::where('id', $request->input('plot_update'))->update($updateData);
             return $this->sendResponse([], 'Plot updated successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);

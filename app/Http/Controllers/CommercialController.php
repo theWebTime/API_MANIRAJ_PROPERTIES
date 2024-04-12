@@ -49,11 +49,18 @@ class CommercialController extends BaseController
         }
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = Commercial::where('commercials.id', $id)->join('commercial_types', 'commercial_types.id', '=', 'commercials.commercial_type_id')->select('commercials.id', 'commercial_types.type', 'commercials.iframe', 'commercials.location', 'commercials.square_feet', 'commercials.status_id')->first();
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'commercial_show' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $data = Commercial::where('commercials.id', $request->input('commercial_show'))->join('commercial_types', 'commercial_types.id', '=', 'commercials.commercial_type_id')->select('commercials.id', 'commercial_types.type', 'commercials.iframe', 'commercials.location', 'commercials.square_feet', 'commercials.status_id')->first();
             if (is_null($data)) {
                 return $this->sendError('Data not found.');
             }
@@ -63,7 +70,7 @@ class CommercialController extends BaseController
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
@@ -74,13 +81,14 @@ class CommercialController extends BaseController
                 'square_feet' => 'required|string|max:50',
                 'status_id' => 'required|exists:statuses,id',
                 'commercial_type_id' => 'required|exists:commercial_types,id',
+                'commercial_update' => 'required',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
             $updateData = (['iframe' => $input['iframe'], 'location' => $input['location'], 'square_feet' => $input['square_feet'], 'status_id' => $input['status_id'], 'commercial_type_id' => $input['commercial_type_id']]);
             // Insert or Update Commercial in commercials Table
-            Commercial::where('id', $id)->update($updateData);
+            Commercial::where('id', $request->input('commercial_update'))->update($updateData);
             return $this->sendResponse([], 'Commercial updated successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);

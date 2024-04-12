@@ -54,11 +54,18 @@ class OurTeamController extends BaseController
         }
     }
 
-    public function show($id)
+    public function show(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = OurTeam::where('id', $id)->select('id', 'name', 'image', 'role')->first();
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'our_team_show' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $data = OurTeam::where('id', $request->input('our_team_show'))->select('id', 'name', 'image', 'role')->first();
             if (is_null($data)) {
                 return $this->sendError('Data not found.');
             }
@@ -68,7 +75,7 @@ class OurTeamController extends BaseController
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
@@ -77,6 +84,7 @@ class OurTeamController extends BaseController
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
                 'name' => 'required|string|max:20',
                 'role' => 'required|string|max:20',
+                'our_team_update' => 'required',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
@@ -89,21 +97,28 @@ class OurTeamController extends BaseController
                 $updateData['image'] = $filename;
             }
             // Insert or Update Our Team in our_teams Table
-            OurTeam::where('id', $id)->update($updateData);
+            OurTeam::where('id', $request->input('our_team_update'))->update($updateData);
             return $this->sendResponse([], 'Our Team updated successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);
         }
     }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = DB::table('our_teams')->where('id', $id)->first();
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'our_team_delete' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $data = DB::table('our_teams')->where('id', $request->input('our_team_delete'))->first();
             $path = public_path() . "/images/ourTeam/" . $data->image;
             unlink($path);
-            DB::table('our_teams')->where('id', $id)->delete();
+            DB::table('our_teams')->where('id', $request->input('our_team_delete'))->delete();
             return $this->sendResponse([], 'Our Team deleted successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);

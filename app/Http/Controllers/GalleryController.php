@@ -45,14 +45,21 @@ class GalleryController extends BaseController
         }
     }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = DB::table('galleries')->where('id', $id)->first();
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'gallery_delete' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $data = DB::table('galleries')->where('id', $request->input('gallery_delete'))->first();
             $path = public_path() . "/images/gallery/" . $data->image;
             unlink($path);
-            DB::table('galleries')->where('id', $id)->delete();
+            DB::table('galleries')->where('id', $request->input('gallery_delete'))->delete();
             return $this->sendResponse([], 'Gallery deleted successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);
