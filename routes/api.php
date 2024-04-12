@@ -31,16 +31,17 @@ use App\Http\Controllers\ContactUsController;
 //Login API
 Route::post('login', [AuthController::class, 'login']);
 
-Route::group(['prefix' => '/user-side'], function () {
+/* Route::group(['prefix' => '/user-side'], function () {
     Route::get('/site-setting-show', [SiteSettingController::class, 'siteSettingShow']);
     Route::get('/show-all-amenity', [AmenityController::class, 'showAllAmenity']);
     Route::get('/show-all-residential', [ResidentialController::class, 'showAllResidential']);
-    Route::get('/show-all-residential-gallery', [ResidentialController::class, 'showAllResidentialGallery']);
+    Route::get('/show-all-residential-gallery', [ResidentialController::class, 'showAllResidentialGallery']); 
     Route::get('/show-all-plot', [PlotController::class, 'showAllPlot']);
+    Route::get('/show-all-commercial', [CommercialController::class, 'showAllCommercial']);
     Route::get('/show-about-us', [AboutUsController::class, 'showAboutUs']);
     Route::get('/show-all-gallery', [GalleryController::class, 'showAllGallery']);
     Route::get('/show-all-team-member', [GalleryController::class, 'showAllOurTeam']);
-});
+}); */
 
 Route::get('/amenity-show/{id}', [AmenityController::class, 'show']);
 Route::get('/residential-show/{id}', [ResidentialController::class, 'show']);
@@ -74,9 +75,16 @@ Route::middleware('auth:api')->group(function () {
 
     // Residential Gallery Routes
     Route::group(['prefix' => '/residential-gallery'], function () {
-        Route::get('/index/{id}', [ResidentialController::class, 'indexResidentialGallery']);
-        Route::post('/store/{id}', [ResidentialController::class, 'storeResidentialGallery']);
-        Route::post('/delete/{id}', [ResidentialController::class, 'deleteResidentialGallery']);
+        Route::post('/index', [ResidentialController::class, 'indexResidentialGallery']);
+        Route::post('/store', [ResidentialController::class, 'storeResidentialGallery']);
+        Route::post('/delete', [ResidentialController::class, 'deleteResidentialGallery']);
+    });
+
+    // Residential Amenity Routes
+    Route::group(['prefix' => '/residential-amenity'], function () {
+        Route::post('/index', [ResidentialController::class, 'indexResidentialAmenity']);
+        Route::post('/store', [ResidentialController::class, 'storeResidentialAmenity']);
+        Route::post('/delete', [ResidentialController::class, 'deleteResidentialAmenity']);
     });
 
     // Plot Routes
