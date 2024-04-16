@@ -31,6 +31,11 @@ use App\Http\Controllers\ContactUsController;
 //Login API
 Route::post('login', [AuthController::class, 'login']);
 
+// Profile Routes
+Route::get('/profile', [AuthController::class, 'profile']);
+Route::post('/profile_update', [AuthController::class, 'profile_update']);
+Route::post('logout', [AuthController::class, 'logout']);
+
 /* Route::group(['prefix' => '/user-side'], function () {
     Route::get('/site-setting-show', [SiteSettingController::class, 'siteSettingShow']);
     Route::get('/show-all-amenity', [AmenityController::class, 'showAllAmenity']);
