@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use \Exception;
 use Illuminate\Support\Facades\DB;
+use App\Models\TypeOfProperty;
+use App\Models\Status;
+use App\Models\Amenity;
 use App\Models\Residentials;
 use App\Models\ResidentialGallery;
 use App\Models\ResidentialAmenities;
@@ -14,6 +17,36 @@ use App\Http\Controllers\BaseController as BaseController;
 
 class ResidentialController extends BaseController
 {
+    public function typeOfPropertyList()
+    {
+        try {
+            $data = TypeOfProperty::select('id', 'no_bhk')->get();
+            return $this->sendResponse($data, 'Type Of Property retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('something went wrong!', $e);
+        }
+    }
+
+    public function propertyStatus()
+    {
+        try {
+            $data = Status::select('id', 'name')->get();
+            return $this->sendResponse($data, 'Status Of Property retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('something went wrong!', $e);
+        }
+    }
+
+    public function propertyAmenity()
+    {
+        try {
+            $data = Amenity::select('id', 'name')->get();
+            return $this->sendResponse($data, 'Amenity Of Property retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('something went wrong!', $e);
+        }
+    }
+
     public function index(Request $request)
     {
         try {
@@ -214,6 +247,7 @@ class ResidentialController extends BaseController
             DB::table('residential_galleries')->where('id', $request->input('residential_gallery_delete'))->delete();
             return $this->sendResponse([], 'Residential Gallery deleted successfully.');
         } catch (Exception $e) {
+            return $e;
             return $this->sendError('something went wrong!', $e);
         }
     }
@@ -283,7 +317,7 @@ class ResidentialController extends BaseController
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            ResidentialAmenities::where('residentials_id', $request->input('residential_amenity_delete'))->delete();
+            ResidentialAmenities::where('id', $request->input('residential_amenity_delete'))->delete();
             return $this->sendResponse([], 'Residential Amenities deleted successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);

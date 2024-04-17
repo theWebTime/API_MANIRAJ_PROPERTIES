@@ -59,7 +59,7 @@ class PlotController extends BaseController
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $data = Plot::where('id', $request->input('plot_show'))->select('id', 'iframe', 'location', 'square_yard', 'status_id')->first();
+            $data = Plot::where('id', $request->input('plot_show'))->select('id', 'iframe', 'location', 'square_yard', 'status_id', 'status')->first();
             if (is_null($data)) {
                 return $this->sendError('Data not found.');
             }

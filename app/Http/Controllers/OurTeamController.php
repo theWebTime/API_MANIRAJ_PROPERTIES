@@ -15,7 +15,7 @@ class OurTeamController extends BaseController
     public function index(Request $request)
     {
         try {
-            $data = OurTeam::select('id', 'name', 'role', 'image')->where(function ($query) use ($request) {
+            $data = OurTeam::select('id', 'name', 'role')->where(function ($query) use ($request) {
                 if ($request->search != null) {
                     $query->where('name', 'like', '%' . $request->search . '%');
                 }

@@ -20,15 +20,15 @@ class SiteSettingController extends BaseController
                 'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
                 'email1' => 'required|max:100',
                 'email2' => 'nullable|max:100',
-                'phone_number1' => 'required|max:15',
-                'phone_number2' => 'nullable|max:15',
+                'phone_number1' => 'required|max:10',
+                'phone_number2' => 'nullable|max:10',
                 'address' => 'required|string',
                 'iframe' => 'required|string',
                 'video_link' => 'nullable|url',
                 'facebook_link' => 'nullable|max:200|url',
                 'instagram_link' => 'nullable|max:200|url',
                 'youtube_link' => 'nullable|max:200|url',
-                'whatsapp_number' => 'nullable|max:15',
+                'whatsapp_number' => 'nullable|max:10',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());

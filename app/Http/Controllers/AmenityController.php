@@ -14,7 +14,7 @@ class AmenityController extends BaseController
     public function index(Request $request)
     {
         try {
-            $data = Amenity::select('id', 'name', 'description', 'status')->where(function ($query) use ($request) {
+            $data = Amenity::select('id', 'name', 'status')->where(function ($query) use ($request) {
                 if ($request->search != null) {
                     $query->where('name', 'like', '%' . $request->search . '%');
                 }

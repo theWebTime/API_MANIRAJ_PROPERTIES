@@ -6,11 +6,22 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use \Exception;
 use App\Models\Commercial;
+use App\Models\CommercialType;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\BaseController as BaseController;
 
 class CommercialController extends BaseController
 {
+    public function commercialType()
+    {
+        try {
+            $data = CommercialType::select('id', 'type')->get();
+            return $this->sendResponse($data, 'Commercial Property retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('something went wrong!', $e);
+        }
+    }
+
     public function index(Request $request)
     {
         try {
@@ -60,7 +71,7 @@ class CommercialController extends BaseController
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $data = Commercial::where('commercials.id', $request->input('commercial_show'))->join('commercial_types', 'commercial_types.id', '=', 'commercials.commercial_type_id')->select('commercials.id', 'commercial_types.type', 'commercials.iframe', 'commercials.location', 'commercials.square_feet', 'commercials.status_id')->first();
+            $data = Commercial::where('commercials.id', $request->input('commercial_show'))->join('commercial_types', 'commercial_types.id', '=', 'commercials.commercial_type_id')->select('commercials.id', 'commercial_types.type', 'commercials.iframe', 'commercials.location', 'commercials.square_feet', 'commercials.status_id', 'commercials.commercial_type_id', 'commercials.status')->first();
             if (is_null($data)) {
                 return $this->sendError('Data not found.');
             }
@@ -81,12 +92,13 @@ class CommercialController extends BaseController
                 'square_feet' => 'required|string|max:50',
                 'status_id' => 'required|exists:statuses,id',
                 'commercial_type_id' => 'required|exists:commercial_types,id',
+                'status' => 'required|in:0,1',
                 'commercial_update' => 'required',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $updateData = (['iframe' => $input['iframe'], 'location' => $input['location'], 'square_feet' => $input['square_feet'], 'status_id' => $input['status_id'], 'commercial_type_id' => $input['commercial_type_id']]);
+            $updateData = (['iframe' => $input['iframe'], 'location' => $input['location'], 'square_feet' => $input['square_feet'], 'status_id' => $input['status_id'], 'commercial_type_id' => $input['commercial_type_id'], 'status' => $input['status']]);
             // Insert or Update Commercial in commercials Table
             Commercial::where('id', $request->input('commercial_update'))->update($updateData);
             return $this->sendResponse([], 'Commercial updated successfully.');

@@ -31,29 +31,37 @@ use App\Http\Controllers\ContactUsController;
 //Login API
 Route::post('login', [AuthController::class, 'login']);
 
-// Profile Routes
-Route::get('/profile', [AuthController::class, 'profile']);
-Route::post('/profile_update', [AuthController::class, 'profile_update']);
-Route::post('logout', [AuthController::class, 'logout']);
 
-/* Route::group(['prefix' => '/user-side'], function () {
+
+Route::group(['prefix' => '/user-side'], function () {
     Route::get('/site-setting-show', [SiteSettingController::class, 'siteSettingShow']);
-    Route::get('/show-all-amenity', [AmenityController::class, 'showAllAmenity']);
+    Route::get('/show-about-us', [AboutUsController::class, 'showAboutUs']);
+    /* Route::get('/show-all-amenity', [AmenityController::class, 'showAllAmenity']);
     Route::get('/show-all-residential', [ResidentialController::class, 'showAllResidential']);
     Route::get('/show-all-residential-gallery', [ResidentialController::class, 'showAllResidentialGallery']); 
     Route::get('/show-all-plot', [PlotController::class, 'showAllPlot']);
     Route::get('/show-all-commercial', [CommercialController::class, 'showAllCommercial']);
-    Route::get('/show-about-us', [AboutUsController::class, 'showAboutUs']);
     Route::get('/show-all-gallery', [GalleryController::class, 'showAllGallery']);
-    Route::get('/show-all-team-member', [GalleryController::class, 'showAllOurTeam']);
-}); */
+    Route::get('/show-all-team-member', [GalleryController::class, 'showAllOurTeam']); */
+});
 
 
 // Contact Us Routes
 Route::post('/contact-us-store', [ContactUsController::class, 'store']);
 
+// Listing Routes
+Route::get('/type-of-property-listing', [ResidentialController::class, 'typeOfPropertyList']);
+Route::get('/status-of-property-listing', [ResidentialController::class, 'propertyStatus']);
+Route::get('/amenity-of-property-listing', [ResidentialController::class, 'propertyAmenity']);
+Route::get('/commercial-property-listing', [CommercialController::class, 'commercialType']);
+
 
 Route::middleware('auth:api')->group(function () {
+
+    // Profile Routes
+    Route::get('/profile', [AuthController::class, 'profile']);
+    Route::post('/profile_update', [AuthController::class, 'profile_update']);
+    Route::post('logout', [AuthController::class, 'logout']);
 
     // Site Setting Routes
     Route::group(['prefix' => '/site-setting'], function () {

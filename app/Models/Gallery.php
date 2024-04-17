@@ -9,9 +9,9 @@ class Gallery extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['image'];
+    protected $fillable = ['data'];
 
-    public function getImageAttribute($value)
+    public function getDataAttribute($value)
     {
         $host = request()->getSchemeAndHttpHost();
         if ($value) {
