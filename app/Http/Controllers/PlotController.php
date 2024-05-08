@@ -98,7 +98,7 @@ class PlotController extends BaseController
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = Plot::select('id', 'iframe', 'location', 'square_yard', 'status_id')->where('status', 1)->get();
+            $data = Plot::join('statuses', 'statuses.id', '=', 'plots.status_id')->select('plots.id', 'iframe', 'location', 'square_yard', 'statuses.name as status_name')->where('status', 1)->get();
             if (is_null($data)) {
                 return $this->sendError('Data not found.');
             }

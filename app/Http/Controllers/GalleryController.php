@@ -70,7 +70,7 @@ class GalleryController extends BaseController
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = Gallery::select('id', 'image')->get();
+            $data = Gallery::select('id', 'data')->get();
             if (is_null($data)) {
                 return $this->sendError('Data not found.');
             }

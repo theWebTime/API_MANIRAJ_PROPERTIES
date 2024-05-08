@@ -111,7 +111,7 @@ class CommercialController extends BaseController
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = Commercial::join('commercial_types', 'commercial_types.id', '=', 'commercials.commercial_type_id')->select('commercials.id', 'commercial_types.type', 'commercials.iframe', 'commercials.location', 'commercials.square_feet', 'commercials.status_id')->where('status', 1)->get();
+            $data = Commercial::join('commercial_types', 'commercial_types.id', '=', 'commercials.commercial_type_id')->join('statuses', 'statuses.id', '=', 'commercials.status_id')->select('commercials.id', 'commercial_types.type', 'commercials.iframe', 'commercials.location', 'commercials.square_feet', 'statuses.name as status_name')->where('status', 1)->get();
             return $this->sendResponse($data, 'All Commercial retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);

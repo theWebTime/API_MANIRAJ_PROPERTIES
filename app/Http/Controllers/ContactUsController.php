@@ -21,7 +21,7 @@ class ContactUsController extends BaseController
                 'email' => 'required|string|max:100',
                 'message' => 'required|string',
                 'private_message' => 'required|string',
-                'phone_number' => 'required|string|max:15',
+                'phone_number' => 'required|max:15',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());

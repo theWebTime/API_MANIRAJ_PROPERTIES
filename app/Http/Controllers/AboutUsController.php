@@ -20,12 +20,12 @@ class AboutUsController extends BaseController
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
                 'title' => 'required|string|max:100',
                 'description' => 'nullable',
-                'hand_of_experience' => 'nullable|max:10|integer',
-                'million_square_feet' => 'nullable|max:10|integer',
-                'units' => 'nullable|max:10|integer',
-                'residential_property' => 'nullable|max:10|integer',
-                'commercial_property' => 'nullable|max:10|integer',
-                'plots' => 'nullable|max:10|integer',
+                'hand_of_experience' => 'nullable|max:10',
+                'million_square_feet' => 'nullable|max:10',
+                'units' => 'nullable|max:10',
+                'residential_property' => 'nullable|max:10',
+                'commercial_property' => 'nullable|max:10',
+                'plots' => 'nullable|max:10',
             ]);
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());

@@ -36,13 +36,12 @@ Route::post('login', [AuthController::class, 'login']);
 Route::group(['prefix' => '/user-side'], function () {
     Route::get('/site-setting-show', [SiteSettingController::class, 'siteSettingShow']);
     Route::get('/show-about-us', [AboutUsController::class, 'showAboutUs']);
-    /* Route::get('/show-all-amenity', [AmenityController::class, 'showAllAmenity']);
     Route::get('/show-all-residential', [ResidentialController::class, 'showAllResidential']);
-    Route::get('/show-all-residential-gallery', [ResidentialController::class, 'showAllResidentialGallery']); 
-    Route::get('/show-all-plot', [PlotController::class, 'showAllPlot']);
+    Route::post('/show-all-residential-detail', [ResidentialController::class, 'residentialDetail']);
+    Route::get('/show-all-team-member', [OurTeamController::class, 'showAllOurTeam']);
     Route::get('/show-all-commercial', [CommercialController::class, 'showAllCommercial']);
+    Route::get('/show-all-plot', [PlotController::class, 'showAllPlot']);
     Route::get('/show-all-gallery', [GalleryController::class, 'showAllGallery']);
-    Route::get('/show-all-team-member', [GalleryController::class, 'showAllOurTeam']); */
 });
 
 

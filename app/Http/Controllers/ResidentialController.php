@@ -166,15 +166,31 @@ class ResidentialController extends BaseController
         }
     }
 
-    public function showAllResidential()
+    public function showAllResidential(Request $request)
     {
         //Using Try & Catch For Error Handling
         try {
-            $data = Residentials::select('id', 'name', 'image', 'description', 'type_of_property_id', 'square_yard', 'status_id', 'shop_square_feet', 'iframe', 'location', 'brochure')->where('status', 1)->get();
-            if (is_null($data)) {
-                return $this->sendError('Data not found.');
+            $data = Residentials::select('id', 'name', 'image', 'description', 'type_of_property_id', 'square_yard', 'status_id', 'shop_square_feet', 'iframe', 'location', 'brochure')->where('status', 1);
+            if (!$request->total) {
+                $data = $data->get();
+            } else {
+                $data = $data->limit(3)->get();
             }
             return $this->sendResponse($data, 'All Residential retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('something went wrong!', $e);
+        }
+    }
+
+    public function residentialDetail(Request $request)
+    {
+        try {
+            $residentialDetail = Residentials::where('residentials.id', $request->input('residential_show'))->join('type_of_properties', 'type_of_properties.id', '=', 'residentials.type_of_property_id')->join('statuses', 'statuses.id', '=', 'residentials.status_id')->select('residentials.id', 'residentials.name as residential_name', 'image', 'description', 'type_of_properties.no_bhk', 'square_yard', 'statuses.name as status_name', 'shop_square_feet', 'iframe', 'location', 'brochure')->where('status', 1)->first();
+
+            $residentialGallery = ResidentialGallery::where('residential_galleries.residential_id', $request->input('residential_show'))->get();
+            $residentialAmenities = ResidentialAmenities::where('residential_amenities.residentials_id', $request->input('residential_show'))->join('amenities', 'amenities.id', '=', 'residential_amenities.amenities_id')->select('residential_amenities.id', 'amenities.name', 'amenities.description')->get();
+            $data = ['residentialDetail' => $residentialDetail, 'residentialGallery' => $residentialGallery, 'residentialAmenities' => $residentialAmenities];
+            return $this->sendResponse($data, 'Residentials retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);
         }
