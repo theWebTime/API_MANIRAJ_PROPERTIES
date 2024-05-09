@@ -12,6 +12,7 @@ use App\Http\Controllers\AboutUsController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\OurTeamController;
 use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\ResidentialInquiryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,10 @@ Route::group(['prefix' => '/user-side'], function () {
 
 // Contact Us Routes
 Route::post('/contact-us-store', [ContactUsController::class, 'store']);
+
+// Residential Inquiry Routes
+Route::post('/residential-inquiry-store', [ResidentialInquiryController::class, 'store']);
+
 
 // Listing Routes
 Route::get('/type-of-property-listing', [ResidentialController::class, 'typeOfPropertyList']);
@@ -136,4 +141,7 @@ Route::middleware('auth:api')->group(function () {
 
     // Contact Us Routes
     Route::get('/contact-us-show', [ContactUsController::class, 'show']);
+
+    // Residential Inquiry Routes
+    Route::get('/residential-inquiry-show', [ResidentialInquiryController::class, 'residentialInquiry']);
 });

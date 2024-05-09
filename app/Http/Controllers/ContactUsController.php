@@ -26,7 +26,6 @@ class ContactUsController extends BaseController
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            // Insert or Update Service in services Table
             $data = ContactUs::create($input);
             return $this->sendResponse([], 'Contact Us created successfully.');
         } catch (Exception $e) {
