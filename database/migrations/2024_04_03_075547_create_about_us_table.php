@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('image', 300)->nullable();
             $table->string('title', 100)->nullable();
             $table->text('description')->nullable();
-            $table->integer('hand_of_experience', 10)->nullable();
-            $table->integer('million_square_feet', 10)->nullable();
-            $table->integer('units', 10)->nullable();
-            $table->integer('residential_property', 10)->nullable();
-            $table->integer('commercial_property', 10)->nullable();
-            $table->integer('plots', 10)->nullable();
+            $table->string('hand_of_experience', 10)->nullable();
+            $table->string('million_square_feet', 10)->nullable();
+            $table->string('units', 10)->nullable();
+            $table->string('residential_property', 10)->nullable();
+            $table->string('commercial_property', 10)->nullable();
+            $table->string('plots', 10)->nullable();
             $table->timestamps();
         });
     }

@@ -9,7 +9,7 @@ class Residentials extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'image', 'type_of_property_id', 'square_yard', 'amenities_id', 'status_id', 'shop', 'iframe', 'location', 'brochure', 'status'];
+    protected $fillable = ['name', 'description', 'image', 'type_of_property_id', 'square_yard', 'price', 'possession', 'amenities_id', 'status_id', 'shop', 'iframe', 'location', 'brochure', 'status'];
 
     public function getImageAttribute($value)
     {

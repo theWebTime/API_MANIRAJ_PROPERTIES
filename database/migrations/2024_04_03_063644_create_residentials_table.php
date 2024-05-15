@@ -19,6 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('type_of_property_id');
             $table->foreign('type_of_property_id')->references('id')->on('type_of_properties');
             $table->string('square_yard', 50);
+            $table->string('price', 50);
+            $table->string('possession', 50);
             $table->unsignedBigInteger('status_id');
             $table->foreign('status_id')->references('id')->on('statuses');
             $table->string('shop_square_feet', 50)->nullable();
