@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\TypeOfProperty;
 
 class Residentials extends Model
 {
@@ -28,5 +29,13 @@ class Residentials extends Model
         } else {
             return null;
         }
+    }
+
+    protected $appends = ['top'];
+
+    public function getTopAttribute()
+    {
+        $data = TypeOfProperty::whereIn('id', explode(',', $this->type_of_property_id))->pluck('id');
+        return $data;
     }
 }

@@ -70,7 +70,8 @@ class ResidentialController extends BaseController
                 'name' => 'required|string|max:50',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
                 'description' => 'nullable',
-                'type_of_property_id' => 'required|exists:type_of_properties,id',
+                'type_of_property_id' => 'nullable|exists:type_of_properties,id',
+                //'type_of_property_id' => implode(', ', $request['top']),
                 'square_yard' => 'required|string|max:50',
                 'price' => 'required|string|max:50',
                 'possession' => 'required|string|max:50',
@@ -134,7 +135,8 @@ class ResidentialController extends BaseController
                 'name' => 'required|string|max:50',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
                 'description' => 'nullable',
-                'type_of_property_id' => 'required|exists:type_of_properties,id',
+                //'type_of_property_id' => 'nullable|exists:type_of_properties,id',
+                'top' => 'required',
                 'square_yard' => 'required|string|max:50',
                 'price' => 'required|string|max:50',
                 'possession' => 'required|string|max:50',
@@ -149,7 +151,7 @@ class ResidentialController extends BaseController
             if ($validator->fails()) {
                 return $this->sendError('Validation Error.', $validator->errors());
             }
-            $updateData = (['name' => $input['name'], 'description' => $input['description'], 'type_of_property_id' => $input['type_of_property_id'], 'square_yard' => $input['square_yard'], 'price' => $input['price'], 'possession' => $input['possession'], 'status_id' => $input['status_id'], 'shop_square_feet' => $input['shop_square_feet'], 'iframe' => $input['iframe'], 'location' => $input['location'], 'status' => $input['status']]);
+            $updateData = (['name' => $input['name'], 'description' => $input['description'], 'type_of_property_id' => $input['top'], 'square_yard' => $input['square_yard'], 'price' => $input['price'], 'possession' => $input['possession'], 'status_id' => $input['status_id'], 'shop_square_feet' => $input['shop_square_feet'], 'iframe' => $input['iframe'], 'location' => $input['location'], 'status' => $input['status']]);
             if ($request->file('image')) {
                 $file = $request->file('image');
                 $filename = time() . $file->getClientOriginalName();
@@ -189,11 +191,11 @@ class ResidentialController extends BaseController
     public function residentialDetail(Request $request)
     {
         try {
-            $residentialDetail = Residentials::where('residentials.id', $request->input('residential_show'))->join('type_of_properties', 'type_of_properties.id', '=', 'residentials.type_of_property_id')->join('statuses', 'statuses.id', '=', 'residentials.status_id')->select('residentials.id', 'residentials.name as residential_name', 'image', 'description', 'type_of_properties.no_bhk', 'square_yard', 'price', 'possession', 'statuses.name as status_name', 'shop_square_feet', 'iframe', 'location', 'brochure')->where('status', 1)->first();
-
+            $residentialDetail = Residentials::where('residentials.id', $request->input('residential_show'))->join('type_of_properties', 'type_of_properties.id', '=', 'residentials.type_of_property_id')->join('statuses', 'statuses.id', '=', 'residentials.status_id')->select('residentials.id', 'residentials.name as residential_name', 'image', 'description', 'type_of_property_id', 'square_yard', 'price', 'possession', 'statuses.name as status_name', 'shop_square_feet', 'iframe', 'location', 'brochure')->where('status', 1)->first();
+            $residentialProperty = TypeOfProperty::whereIn('id', explode(',', $residentialDetail ? $residentialDetail->type_of_property_id : 0))->select('no_bhk')->get();
             $residentialGallery = ResidentialGallery::where('residential_galleries.residential_id', $request->input('residential_show'))->get();
             $residentialAmenities = ResidentialAmenities::where('residential_amenities.residentials_id', $request->input('residential_show'))->join('amenities', 'amenities.id', '=', 'residential_amenities.amenities_id')->select('residential_amenities.id', 'amenities.name', 'amenities.description')->get();
-            $data = ['residentialDetail' => $residentialDetail, 'residentialGallery' => $residentialGallery, 'residentialAmenities' => $residentialAmenities];
+            $data = ['residentialDetail' => $residentialDetail, 'residentialProperty' => $residentialProperty, 'residentialGallery' => $residentialGallery, 'residentialAmenities' => $residentialAmenities];
             return $this->sendResponse($data, 'Residentials retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);

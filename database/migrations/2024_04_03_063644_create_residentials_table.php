@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('name', 50);
             $table->text('description')->nullable();
             $table->string('image', 300)->nullable();
-            $table->unsignedBigInteger('type_of_property_id');
-            $table->foreign('type_of_property_id')->references('id')->on('type_of_properties');
+            //$table->unsignedBigInteger('type_of_property_id');
+            //$table->foreign('type_of_property_id')->references('id')->on('type_of_properties');
+            $table->string('type_of_property_id')->references('id')->on('type_of_properties')->nullable();
             $table->string('square_yard', 50);
             $table->string('price', 50);
             $table->string('possession', 50);
