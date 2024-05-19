@@ -102,6 +102,13 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/delete', [ResidentialController::class, 'deleteResidentialAmenity']);
     });
 
+    // Residential Floor Routes
+    Route::group(['prefix' => '/residential-floor'], function () {
+        Route::post('/index', [ResidentialController::class, 'indexResidentialFloor']);
+        Route::post('/store', [ResidentialController::class, 'storeResidentialFloor']);
+        Route::post('/delete', [ResidentialController::class, 'deleteResidentialFloor']);
+    });
+
     // Plot Routes
     Route::group(['prefix' => '/plot'], function () {
         Route::get('/index', [PlotController::class, 'index']);

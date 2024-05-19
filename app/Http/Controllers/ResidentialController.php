@@ -12,6 +12,7 @@ use App\Models\Amenity;
 use App\Models\Residentials;
 use App\Models\ResidentialGallery;
 use App\Models\ResidentialAmenities;
+use App\Models\ResidentialFloor;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\BaseController as BaseController;
 
@@ -194,8 +195,9 @@ class ResidentialController extends BaseController
             $residentialDetail = Residentials::where('residentials.id', $request->input('residential_show'))->join('type_of_properties', 'type_of_properties.id', '=', 'residentials.type_of_property_id')->join('statuses', 'statuses.id', '=', 'residentials.status_id')->select('residentials.id', 'residentials.name as residential_name', 'image', 'description', 'type_of_property_id', 'square_yard', 'price', 'possession', 'statuses.name as status_name', 'shop_square_feet', 'iframe', 'location', 'brochure')->where('status', 1)->first();
             $residentialProperty = TypeOfProperty::whereIn('id', explode(',', $residentialDetail ? $residentialDetail->type_of_property_id : 0))->select('no_bhk')->get();
             $residentialGallery = ResidentialGallery::where('residential_galleries.residential_id', $request->input('residential_show'))->get();
+            $residentialFloor = ResidentialFloor::where('residential_floors.residential_id', $request->input('residential_show'))->get();
             $residentialAmenities = ResidentialAmenities::where('residential_amenities.residentials_id', $request->input('residential_show'))->join('amenities', 'amenities.id', '=', 'residential_amenities.amenities_id')->select('residential_amenities.id', 'amenities.name', 'amenities.description')->get();
-            $data = ['residentialDetail' => $residentialDetail, 'residentialProperty' => $residentialProperty, 'residentialGallery' => $residentialGallery, 'residentialAmenities' => $residentialAmenities];
+            $data = ['residentialDetail' => $residentialDetail, 'residentialProperty' => $residentialProperty, 'residentialGallery' => $residentialGallery, 'residentialAmenities' => $residentialAmenities, 'residentialFloor' => $residentialFloor];
             return $this->sendResponse($data, 'Residentials retrieved successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);
@@ -341,6 +343,62 @@ class ResidentialController extends BaseController
             }
             ResidentialAmenities::where('id', $request->input('amenity_id'))->delete();
             return $this->sendResponse([], 'Residential Amenities deleted successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('something went wrong!', $e);
+        }
+    }
+
+    public function indexResidentialFloor(Request $request)
+    {
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'id' => 'required|exists:residentials,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $residentialFloor = ResidentialFloor::where('residential_id', $request->input('id'))->select('id', 'floor')->orderBy('id', 'DESC')->paginate($request->itemsPerPage ?? 10);
+            return $this->sendResponse($residentialFloor, 'Residential Floors Data retrieved successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('something went wrong!', $e);
+        }
+    }
+
+    public function storeResidentialFloor(Request $request)
+    {
+        //Using Try & Catch For Error Handling
+        try {
+            //return $request;
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'id' => 'required|exists:residentials,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            $updateData = (['residential_id' => $request->input('id'), 'floor' => $input['floor']]);
+            // Insert or Update Residentials Floor in residential_floors Table
+            $data = ResidentialFloor::insert($updateData);
+            return $this->sendResponse([], 'Residential Floor created successfully.');
+        } catch (Exception $e) {
+            return $this->sendError('something went wrong!', $e);
+        }
+    }
+
+    public function deleteResidentialFloor(Request $request)
+    {
+        //Using Try & Catch For Error Handling
+        try {
+            $input = $request->all();
+            $validator = Validator::make($input, [
+                'id' => 'required|exists:residential_floors,id',
+            ]);
+            if ($validator->fails()) {
+                return $this->sendError('Validation Error.', $validator->errors());
+            }
+            ResidentialFloor::where('id', $request->input('id'))->delete();
+            return $this->sendResponse([], 'Residential Floor deleted successfully.');
         } catch (Exception $e) {
             return $this->sendError('something went wrong!', $e);
         }
